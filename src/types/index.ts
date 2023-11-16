@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from 'react'
 import { Question } from '../data/QuizQuestions'
+import { Message } from 'react-chat-ui'
 
 export enum ScreenTypes {
   SplashScreen,
@@ -41,6 +42,12 @@ export type QuizContextTypes = {
     title: string
     created: boolean
   }
+  gotFromGpt: boolean
+  loading: boolean
+  socketMsg: Message[]
+  userName: string
+  setUserName: Dispatch<SetStateAction<string>>
+  sendMsg: (msg: Message) => void
   addQuestion: (question: Question) => void
   joinRoom: (roomNumber: string) => void
   createRoom: (roomNumber: string, QFromGpt: boolean, title: string) => void

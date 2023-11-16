@@ -60,7 +60,6 @@ function App() {
                   </AuthGuard>
                 }
               />
-              {/* <Route path="/" element={<QuizTopicsScreen />} /> */}
             </Routes>
           </ToggleTheme>
         </QuizProvider>

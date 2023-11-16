@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import { useTheme } from 'styled-components'
 import Modal from 'react-modal'
 import { useQuiz } from '../../../context/QuizContext'
+import { getAuth } from 'firebase/auth'
 
 interface AddQuestionModalProps {
   isOpen: boolean
@@ -41,10 +42,17 @@ const AddQuestionModal: React.FC<AddQuestionModalProps> = ({
   onRequestClose,
 }) => {
   const currentTheme = useTheme()
-  const [question, setQuestion] = useState('')
-  const [options, setOptions] = useState(['Option...', 'Option...'])
-  const [correctAnswers, setCorrectAnswer] = useState<number[]>([])
-  const { addQuestion } = useQuiz()
+  const initialStateOfQuestion = {
+    question: '',
+    options: ['Option...', 'Option...'],
+    correctAnswers: [],
+  }
+  const [question, setQuestion] = useState(initialStateOfQuestion.question)
+  const [options, setOptions] = useState(initialStateOfQuestion.options)
+  const [correctAnswers, setCorrectAnswer] = useState<number[]>(
+    initialStateOfQuestion.correctAnswers
+  )
+  const { addQuestion, userName } = useQuiz()
 
   const addOption = () => {
     setOptions([...options, 'Option...'])
@@ -79,7 +87,11 @@ const AddQuestionModal: React.FC<AddQuestionModalProps> = ({
         isMulti: correctOptions.length !== 1,
         correctAnswers: correctOptions,
         score: 1,
+        user: userName,
       })
+      setQuestion(initialStateOfQuestion.question)
+      setCorrectAnswer(initialStateOfQuestion.correctAnswers)
+      setOptions(initialStateOfQuestion.options)
       onRequestClose()
     }
   }

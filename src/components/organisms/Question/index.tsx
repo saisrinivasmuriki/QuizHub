@@ -9,7 +9,6 @@ import AnswerDrop from '../AnswerDrop'
 import { ActionMeta } from 'react-select'
 import {
   UserDiv,
-  checkQuestionIncludes,
   checkResultIncludes,
 } from '../../../styles/Global'
 import { Next } from '../../../config/icons'
@@ -102,7 +101,7 @@ const AnswerDiv = styled.ol<{ response: answerResponseType }>`
 
 interface QuestionTypes {
   question: string
-  userName: string
+  userName?: string
   code?: string
   image?: string
   isMulti: boolean

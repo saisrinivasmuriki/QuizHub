@@ -4,6 +4,7 @@ import InputField from '../../atoms/InputField'
 import { ChatFeed, Message } from 'react-chat-ui'
 import styled, { useTheme } from 'styled-components'
 import { Send } from '../../../config/icons'
+import { useQuiz } from '../../../context/QuizContext'
 
 Modal.setAppElement('#root') // Set the root element for accessibility
 
@@ -22,18 +23,19 @@ const StyledImg = styled.img`
 `
 
 const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onRequestClose, username }) => {
-  const [messages, setMessages] = useState<Message[]>([])
+  const { sendMsg, socketMsg } = useQuiz()
+  // const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, setNewMessage] = useState('')
   const [isTyping, setIsTyping] = useState(false)
   const currentTheme = useTheme()
 
   const handleSendMessage = () => {
     if (newMessage.trim() !== '') {
-      const newMessages = [
-        ...messages,
-        new Message({ id: 0, message: newMessage, senderName: username }),
-      ]
-      setMessages(newMessages)
+      const msg = new Message({ id: 0, message: newMessage, senderName: username })
+      sendMsg(msg)
+      // const newMessages = [...messages, msg]
+      console.log(msg)
+      // setMessages(newMessages)
       setNewMessage('')
       setIsTyping(false)
     }
@@ -71,9 +73,10 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onRequestClose, username 
     >
       <h1>Chat</h1>
       <ChatFeed
-        messages={messages}
+        messages={socketMsg}
         isTyping={isTyping}
         hasInputField={false}
+        showSenderName={true}
         bubbleStyles={{
           text: { fontSize: 16 },
           backgroundColor: currentTheme.colors.background,

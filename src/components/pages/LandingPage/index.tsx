@@ -18,7 +18,7 @@ import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import { Google } from '../../../config/icons'
 
-const Heading = styled.h2`
+export const Heading = styled.h2`
   font-size: 32px;
   font-weight: 700;
   margin-bottom: 20px;
@@ -97,12 +97,17 @@ const QuizTopicsScreen: React.FC = () => {
   const auth = getAuth()
   const navigate = useNavigate()
   const [authing, setAuthing] = useState(false)
+  const { setUserName } = useQuiz()
 
   const signWithGoogle = async () => {
     setAuthing(true)
     signInWithPopup(auth, new GoogleAuthProvider())
       .then((response) => {
         console.log(response.user.uid)
+        setUserName(
+          response.user.displayName ||
+            `RandomUser@${Math.floor(1000 + Math.random() * 9000)}`
+        )
         navigate('/create-join')
       })
       .catch((error) => {

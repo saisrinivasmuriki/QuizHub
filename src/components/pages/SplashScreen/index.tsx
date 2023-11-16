@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 
 import { AppLogo } from '../../../config/icons'
 import { PageCenter } from '../../../styles/Global'
@@ -8,10 +8,19 @@ interface LogoAnimationProps {
   logoSize: string
 }
 
+const pulseAnimation = keyframes`
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+`
+
 const LogoAnimation = styled.div<LogoAnimationProps>`
   svg {
     transform: ${({ logoSize }) => `scale(${logoSize},${logoSize})`};
-    transition: all 1s ease-in-out;
+    animation: ${pulseAnimation} 1.5s infinite ease-in-out;
     rect {
       stroke: ${({ theme }) => theme.colors.appLogo};
     }

@@ -3,12 +3,15 @@ import styled from 'styled-components'
 
 import { AppLogo, QPostive, Message } from '../../../config/icons'
 import { useQuiz } from '../../../context/QuizContext'
-import { LogoContainer, PageCenter } from '../../../styles/Global'
+import { HighlightedText, LogoContainer, PageCenter } from '../../../styles/Global'
 
 import Question from '../../organisms/Question'
 import MenuBox from '../../molecules/MenuBox'
 import AddQuestionModal from '../AddQuestionScreen'
 import ChatModal from '../ChatScreen'
+import SplashScreen from '../SplashScreen'
+import { Heading } from '../LandingPage'
+import { getAuth } from 'firebase/auth'
 
 const HeaderDiv = styled.div`
   display: flex;
@@ -17,11 +20,15 @@ const HeaderDiv = styled.div`
 const QuestionScreen: FC = () => {
   const [questionModal, setQuestionModal] = useState(false)
   const [chatModal, setChatModal] = useState(false)
-  const { questions, getGptQuestions, roomDetails } = useQuiz()
+  const [copied, setCopied] = useState(false)
+  const { questions, getGptQuestions, roomDetails, gotFromGpt, loading, userName } =
+    useQuiz()
 
   useEffect(() => {
-    if (roomDetails.QFromGPT) {
-      getGptQuestions()
+    if (!gotFromGpt) {
+      if (roomDetails.QFromGPT && roomDetails.created) {
+        getGptQuestions()
+      }
     }
   })
 
@@ -34,40 +41,59 @@ const QuestionScreen: FC = () => {
 
   return (
     <>
-      <PageCenter>
-        <HeaderDiv>
-          <LogoContainer>
-            <AppLogo />
-          </LogoContainer>
-          <MenuBox
-            icons={[
-              <QPostive onClick={handleModal} />,
-              <Message onClick={handleChatModal} />,
-            ]}
+      {!loading && (
+        <>
+          <PageCenter>
+            <HeaderDiv>
+              <LogoContainer>
+                <AppLogo />
+              </LogoContainer>
+              <MenuBox
+                icons={[
+                  <QPostive onClick={handleModal} />,
+                  <Message onClick={handleChatModal} />,
+                ]}
+              />
+            </HeaderDiv>
+            <Heading>
+              {roomDetails.title} [
+              <HighlightedText
+                style={{ cursor: 'pointer' }}
+                onClick={() => {
+                  navigator.clipboard.writeText(roomDetails.room)
+                  setCopied(true)
+                }}
+              >
+                {roomDetails.room}
+              </HighlightedText>
+              ]&nbsp;{copied && <span style={{ color: 'green' }}>✔</span>}
+            </Heading>
+            {questions.map((ques, index) => {
+              const { question, isMulti, choices, code, image, correctAnswers, user } =
+                ques
+              return (
+                <Question
+                  key={index}
+                  question={question}
+                  userName={user}
+                  code={code}
+                  image={image}
+                  choices={choices}
+                  isMulti={isMulti}
+                  correctAnswers={correctAnswers}
+                />
+              )
+            })}
+          </PageCenter>
+          <AddQuestionModal isOpen={questionModal} onRequestClose={handleModal} />
+          <ChatModal
+            isOpen={chatModal}
+            onRequestClose={handleChatModal}
+            username={userName}
           />
-        </HeaderDiv>
-        {questions.map((ques, index) => {
-          const { question, isMulti, choices, code, image, correctAnswers } = ques
-          return (
-            <Question
-              key={index}
-              question={question}
-              userName="User1"
-              code={code}
-              image={image}
-              choices={choices}
-              isMulti={isMulti}
-              correctAnswers={correctAnswers}
-            />
-          )
-        })}
-      </PageCenter>
-      <AddQuestionModal isOpen={questionModal} onRequestClose={handleModal} />
-      <ChatModal
-        isOpen={chatModal}
-        onRequestClose={handleChatModal}
-        username={'Temporary User'}
-      />
+        </>
+      )}
+      {loading && <SplashScreen />}
     </>
   )
 }

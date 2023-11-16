@@ -1,8 +1,3 @@
-import { generalKnowledge } from './generalKnowledge'
-import { javascript } from './javascript'
-import { python } from './python'
-import { react } from './react'
-
 // Question Types
 // 1. MCQs | Multiple Choice | single
 // 2. boolean | true/false | single
@@ -19,6 +14,7 @@ export type Question = {
   score: number
   code?: string
   image?: string
+  user?: string
 }
 
 export type Topic = {
@@ -40,9 +36,5 @@ const initalQuiz: Topic = {
 }
 
 export const quiz: Record<string, Topic> = {
-  JavaScript: javascript,
-  React: react,
-  Python: python,
-  'General Knowledge': generalKnowledge,
   default: initalQuiz,
 }
