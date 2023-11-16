@@ -14,6 +14,7 @@ import { ReactComponent as MessageIcon } from '../assets/icons/messageicon.svg'
 import { ReactComponent as QPostive } from '../assets/icons/qPostive.svg'
 import { ReactComponent as Message } from '../assets/icons/message.svg'
 import Google from '../assets/icons/google.png'
+import Send from '../assets/icons/airplane.png'
 
 export {
   AppLogo,
@@ -32,4 +33,5 @@ export {
   QPostive,
   Message,
   Google,
+  Send,
 }

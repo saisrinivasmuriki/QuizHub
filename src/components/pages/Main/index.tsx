@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { useQuiz } from '../../../context/QuizContext'
 import { ScreenTypes } from '../../../types'
 
-import QuestionScreen from '../QuestionScreenNew'
+import QuestionScreen from '../QuestionScreen'
 import QuizDetailsScreen from '../QuizDetailsScreen'
 import QuizTopicsScreen from '../LandingPage'
 import ResultScreen from '../ResultScreen'

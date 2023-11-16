@@ -12,7 +12,7 @@ import { BrowserRouter, Route, Router, Routes } from 'react-router-dom'
 import LandingPage from './components/pages/LandingPage'
 import AuthGuard from './context/AuthGuard'
 import QuizDetailsScreen from './components/pages/QuizDetailsScreen'
-import QuestionScreen from './components/pages/QuestionScreenNew'
+import QuestionScreen from './components/pages/QuestionScreen'
 
 initializeApp(firebaseConfig)
 

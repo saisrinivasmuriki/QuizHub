@@ -59,9 +59,7 @@ const QuizProvider = ({ children }: QuizProviderProps) => {
   }, [socket, listenQuestion, gptQuestions])
 
   useEffect(() => {
-    // setTimer(totalTime)
     setQuestions(quizQuestions)
-    // joinRoom('hello-world')
   }, [quizTopic, quizQuestions])
 
   const addQuestion = (question: Question) => {

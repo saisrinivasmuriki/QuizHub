@@ -1,173 +1,74 @@
 import { FC, useEffect, useState } from 'react'
 import styled from 'styled-components'
 
-import { AppLogo, CheckIcon, Next, TimerIcon } from '../../../config/icons'
+import { AppLogo, QPostive, Message } from '../../../config/icons'
 import { useQuiz } from '../../../context/QuizContext'
-import { useTimer } from '../../../hooks'
-import { device } from '../../../styles/BreakPoints'
 import { LogoContainer, PageCenter } from '../../../styles/Global'
-import { ScreenTypes } from '../../../types'
 
-import Button from '../../atoms/Button'
-import ModalWrapper from '../../molecules/ModalWrapper'
 import Question from '../../organisms/Question'
-import QuizHeader from '../../organisms/QuizHeader'
-import { ActionMeta } from 'react-select'
+import MenuBox from '../../molecules/MenuBox'
+import AddQuestionModal from '../AddQuestionScreen'
+import ChatModal from '../ChatScreen'
 
-const QuizContainer = styled.div<{ selectedAnswer: boolean }>`
-  width: 900px;
-  background: ${({ theme }) => theme.colors.cardBackground};
-  border-radius: 4px;
-  padding: 0px 60px 80px 60px;
-  margin-bottom: 70px;
-  position: relative;
-  @media ${device.md} {
-    width: 100%;
-    padding: 15px 15px 80px 15px;
-  }
-  button {
-    span {
-      svg {
-        path {
-          fill: ${({ selectedAnswer, theme }) =>
-            selectedAnswer ? `${theme.colors.buttonText}` : `${theme.colors.darkGray}`};
-        }
-      }
-    }
-  }
-`
-
-const ButtonWrapper = styled.div`
-  position: absolute;
-  right: 60px;
-  bottom: 30px;
+const HeaderDiv = styled.div`
   display: flex;
-  gap: 20px;
-  @media ${device.sm} {
-    justify-content: flex-end;
-    width: 90%;
-    right: 15px;
-  }
 `
 
 const QuestionScreen: FC = () => {
-  const [activeQuestion, setActiveQuestion] = useState<number>(0)
-  const [selectedAnswer, setSelectedAnswer] = useState<string[]>([])
-  const [showTimerModal, setShowTimerModal] = useState<boolean>(false)
-  const [showResultModal, setShowResultModal] = useState<boolean>(false)
+  const [questionModal, setQuestionModal] = useState(false)
+  const [chatModal, setChatModal] = useState(false)
+  const { questions, getGptQuestions, roomDetails } = useQuiz()
 
-  const {
-    questions,
-    quizDetails,
-    result,
-    setResult,
-    setCurrentScreen,
-    timer,
-    setTimer,
-    setEndTime,
-  } = useQuiz()
-
-  const currentQuestion = {
-    question: 'What is Question?',
-    type: 'MCQs',
-    choices: ['Answer1', 'Answer2', 'Answer3', 'Answer4'],
-    code: '',
-    image: '',
-    correctAnswers: 'Answer2',
-  }
-
-  const { question, type, choices, code, image, correctAnswers } = currentQuestion
-
-  const onClickNext = () => {
-    const isMatch: boolean =
-      selectedAnswer.length === correctAnswers.length &&
-      selectedAnswer.every((answer) => correctAnswers.includes(answer))
-
-    // adding selected answer, and if answer matches key to result array with current question
-    setResult([...result, { ...currentQuestion, selectedAnswer, isMatch }])
-
-    if (activeQuestion !== questions.length - 1) {
-      setActiveQuestion((prev) => prev + 1)
-    } else {
-      // how long does it take to finish the quiz
-      const timeTaken = quizDetails.totalTime - timer
-      setEndTime(timeTaken)
-      setShowResultModal(true)
+  useEffect(() => {
+    if (roomDetails.QFromGPT) {
+      getGptQuestions()
     }
-    setSelectedAnswer([])
-  }
-
-  const handleAnswerSelection = (newValue: unknown, actionMeta: ActionMeta<unknown>) => {
-    // const { name, checked } = e.target
-
-    // if (type === 'MAQs') {
-    //   if (selectedAnswer.includes(name)) {
-    //     setSelectedAnswer((prevSelectedAnswer) =>
-    //       prevSelectedAnswer.filter((element) => element !== name)
-    //     )
-    //   } else {
-    //     setSelectedAnswer((prevSelectedAnswer) => [...prevSelectedAnswer, name])
-    //   }
-    // }
-
-    // if (type === 'MCQs' || type === 'boolean') {
-    //   if (checked) {
-    //     setSelectedAnswer([name])
-    //   }
-    // }
-  }
+  })
 
   const handleModal = () => {
-    setCurrentScreen(ScreenTypes.ResultScreen)
-    document.body.style.overflow = 'auto'
+    setQuestionModal(!questionModal)
+  }
+  const handleChatModal = () => {
+    setChatModal(!chatModal)
   }
 
-  // to prevent scrolling when modal is opened
-  useEffect(() => {
-    if (showTimerModal || showResultModal) {
-      document.body.style.overflow = 'hidden'
-    }
-  }, [showTimerModal, showResultModal])
-
-  // timer hooks, handle conditions related to time
-  useTimer(timer, quizDetails, setEndTime, setTimer, setShowTimerModal, showResultModal)
-
   return (
-    <PageCenter>
-      <LogoContainer>
-        <AppLogo />
-      </LogoContainer>
-      <QuizContainer selectedAnswer={selectedAnswer.length > 0}>
-        {/* <Question
-          question={question}
-          userName="User1"
-          code={code}
-          image={image}
-          choices={choices}
-          isMulti={type === 'MAQs'}
-          handleAnswerSelection={handleAnswerSelection}
-        /> */}
-        <ButtonWrapper>
-          <Button
-            text="Submit"
-            onClick={onClickNext}
-            icon={<Next />}
-            iconPosition="right"
-            disabled={selectedAnswer.length === 0}
+    <>
+      <PageCenter>
+        <HeaderDiv>
+          <LogoContainer>
+            <AppLogo />
+          </LogoContainer>
+          <MenuBox
+            icons={[
+              <QPostive onClick={handleModal} />,
+              <Message onClick={handleChatModal} />,
+            ]}
           />
-        </ButtonWrapper>
-      </QuizContainer>
-      {/* timer or finish quiz modal*/}
-      {(showTimerModal || showResultModal) && (
-        <ModalWrapper
-          title={showResultModal ? 'Done!' : 'Your time is up!'}
-          subtitle={`You have attempted ${result.length} questions in total.`}
-          onClick={handleModal}
-          icon={showResultModal ? <CheckIcon /> : <TimerIcon />}
-          buttonTitle="SHOW RESULT"
-        />
-      )}
-    </PageCenter>
+        </HeaderDiv>
+        {questions.map((ques, index) => {
+          const { question, isMulti, choices, code, image, correctAnswers } = ques
+          return (
+            <Question
+              key={index}
+              question={question}
+              userName="User1"
+              code={code}
+              image={image}
+              choices={choices}
+              isMulti={isMulti}
+              correctAnswers={correctAnswers}
+            />
+          )
+        })}
+      </PageCenter>
+      <AddQuestionModal isOpen={questionModal} onRequestClose={handleModal} />
+      <ChatModal
+        isOpen={chatModal}
+        onRequestClose={handleChatModal}
+        username={'Temporary User'}
+      />
+    </>
   )
 }
 
