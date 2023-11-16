@@ -8,7 +8,6 @@ interface ProviderType {
 }
 
 export const Provider = (props: ProviderType) => {
-  console.log(props.theme)
   return (
     <ThemeProvider theme={props.theme ? props.theme : themes.light}>
       {props.children}

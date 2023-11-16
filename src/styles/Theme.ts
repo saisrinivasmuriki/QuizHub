@@ -31,6 +31,7 @@ export const themes: Record<string, Theme> = {
       dark: '#282526',
       darkGray: '#9fa3a9',
       darkerGray: '#817a8e',
+      menuBackground: `rgba(255,255,255,0.9)`,
     },
     fonts: {
       anekMalayalam: 'Anek Malayalam',
@@ -76,6 +77,7 @@ export const themes: Record<string, Theme> = {
       dark: '#282526',
       darkGray: '#9fa3a9',
       darkerGray: '#817a8e',
+      menuBackground: `rgba(0,0,0,0.9)`,
     },
     fonts: {
       anekMalayalam: 'Anek Malayalam',

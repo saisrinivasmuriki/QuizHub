@@ -31,6 +31,7 @@ export interface Theme {
     dark: string
     darkGray: string
     darkerGray: string
+    menuBackground: string
   }
   fonts: {
     anekMalayalam: string

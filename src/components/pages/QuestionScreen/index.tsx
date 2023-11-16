@@ -98,7 +98,6 @@ const QuestionScreen: FC = () => {
   }
 
   const handleAnswerSelection = (newValue: unknown, actionMeta: ActionMeta<unknown>) => {
-    console.log(newValue, actionMeta)
     // const { name, checked } = e.target
 
     // if (type === 'MAQs') {
@@ -139,7 +138,7 @@ const QuestionScreen: FC = () => {
         <AppLogo />
       </LogoContainer>
       <QuizContainer selectedAnswer={selectedAnswer.length > 0}>
-        <Question
+        {/* <Question
           question={question}
           userName="User1"
           code={code}
@@ -147,7 +146,7 @@ const QuestionScreen: FC = () => {
           choices={choices}
           isMulti={type === 'MAQs'}
           handleAnswerSelection={handleAnswerSelection}
-        />
+        /> */}
         <ButtonWrapper>
           <Button
             text="Submit"

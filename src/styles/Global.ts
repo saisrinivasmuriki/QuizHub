@@ -1,6 +1,8 @@
 import styled, { createGlobalStyle, css } from 'styled-components'
 import { device } from './BreakPoints'
 import fontsCss from './fonts.module.css'
+import { Result, answerResponseType } from '../types'
+import { Question } from '../data/QuizQuestions'
 
 export const GlobalStyles = createGlobalStyle`
  ${fontsCss} // this works as a normal styled css
@@ -182,6 +184,7 @@ export const Flex = styled.div<FlexProps>`
 export const CenterCardContainer = styled.div`
   background: ${({ theme }) => theme.colors.cardBackground};
   border-radius: 4px;
+  border: 1px solid ${({ theme }) => theme.colors.darkGray};
   min-width: 773px;
   min-height: 620px;
   padding: 50px 10px 60px 10px;
@@ -225,9 +228,46 @@ export const ResizableBox = styled.div<ResizableBoxProps>`
     typeof props.width === 'string' ? props.width : `${props.width}px`};
 `
 
-export const UserDiv = styled.div`
+export const UserDiv = styled.div<{ response: answerResponseType }>`
   padding: 5px;
   color: ${({ theme }) => theme.colors.primaryText};
-  border-bottom: 2px solid ${({ theme }) => theme.colors.themeColor};
+  border-bottom: 2px solid
+    ${({ response, theme }) =>
+      response === 'Correct'
+        ? theme.colors.success
+        : response === 'Wrong'
+        ? theme.colors.danger
+        : theme.colors.themeColor};
   font-weight: bolder;
 `
+
+export const checkQuestionIncludes = (
+  questions: Question[] | Result[],
+  question: Question
+) => {
+  const filtered: Question[] | Result[] = questions.filter(
+    (ques: Question | Result) =>
+      ques.question.replace(' ', '') === question.question.replace(' ', '') &&
+      JSON.stringify(ques.choices.sort()) === JSON.stringify(question.choices.sort()) &&
+      ques.code === question.code &&
+      ques.image === question.image &&
+      JSON.stringify(ques.correctAnswers.sort()) ===
+        JSON.stringify(question.correctAnswers.sort()) &&
+      ques.isMulti === question.isMulti
+  )
+  return filtered
+}
+
+export const checkResultIncludes = (questions: Result[], question: Question) => {
+  const filtered = questions.filter(
+    (ques) =>
+      ques.question.replace(' ', '') === question.question.replace(' ', '') &&
+      JSON.stringify(ques.choices.sort()) === JSON.stringify(question.choices.sort()) &&
+      ques.code === question.code &&
+      ques.image === question.image &&
+      JSON.stringify(ques.correctAnswers.sort()) ===
+        JSON.stringify(question.correctAnswers.sort()) &&
+      ques.isMulti === question.isMulti
+  )
+  return filtered
+}

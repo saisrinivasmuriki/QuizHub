@@ -12,11 +12,11 @@ import Question from '.'
 const meta = {
   title: 'Organisms/Question',
   component: Question,
-  argTypes: {
-    handleAnswerSelection: {
-      action: 'change',
-    },
-  },
+  // argTypes: {
+  //   handleAnswerSelection: {
+  //     action: 'change',
+  //   },
+  // },
 } satisfies Meta<typeof Question>
 
 export default meta
@@ -25,11 +25,11 @@ type Story = StoryObj<typeof meta>
 export const Primary: Story = {
   args: {
     question: 'What is the Question?',
-    userName: "User 1",
+    userName: 'User 1',
     // code?: string
     // image?: string
     isMulti: true,
     choices: ['Answer1', 'Answer2', 'Answer3', 'Answer4'],
+    correctAnswers: ['Answer1'],
   },
 }
-

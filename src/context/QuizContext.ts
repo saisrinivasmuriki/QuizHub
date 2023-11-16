@@ -1,10 +1,11 @@
 import { createContext, useContext } from 'react'
 import { QuizContextTypes, ScreenTypes } from '../types'
+import { Question } from '../data/QuizQuestions'
 
 export const initialState: QuizContextTypes = {
   currentScreen: ScreenTypes.SplashScreen,
   setCurrentScreen: () => {},
-  quizTopic: 'React',
+  quizTopic: 'default',
   selectQuizTopic: () => {},
   questions: [],
   setQuestions: () => {},
@@ -20,6 +21,16 @@ export const initialState: QuizContextTypes = {
     totalTime: 0,
     selectedQuizTopic: 'React',
   },
+  roomDetails: {
+    room: '',
+    QFromGPT: false,
+    title: '',
+    created: false,
+  },
+  addQuestion: (question: Question) => {},
+  joinRoom: (roomNumber: string) => {},
+  createRoom: (roomNumber: string, QFromGpt: boolean, title: string) => {},
+  getGptQuestions: () => {},
 }
 
 export const QuizContext = createContext<QuizContextTypes>(initialState)

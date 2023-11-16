@@ -14,7 +14,7 @@ type CorrectAnswers = string[]
 export type Question = {
   question: string
   choices: Choice[]
-  type: 'MCQs' | 'MAQs' | 'boolean'
+  isMulti: boolean
   correctAnswers: CorrectAnswers
   score: number
   code?: string
@@ -30,9 +30,19 @@ export type Topic = {
   questions: Question[]
 }
 
+const initalQuiz: Topic = {
+  topic: 'default',
+  level: 'Beginner',
+  totalQuestions: 0,
+  totalScore: 0,
+  totalTime: 0,
+  questions: [],
+}
+
 export const quiz: Record<string, Topic> = {
   JavaScript: javascript,
   React: react,
   Python: python,
   'General Knowledge': generalKnowledge,
+  default: initalQuiz,
 }

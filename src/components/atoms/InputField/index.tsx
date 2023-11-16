@@ -9,6 +9,7 @@ interface InputFieldProps {
     right?: ReactNode
   }
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
+  id?: string
 }
 
 const InputBox = styled.div`
@@ -35,6 +36,7 @@ const TextInput = styled.input`
   font-size: 1rem;
   width: 100%;
   background: transparent;
+  color: ${({ theme }) => theme.colors.primaryText};
 `
 
 export const LogoContainer = styled.div`
@@ -52,11 +54,17 @@ export const LogoContainer = styled.div`
 `
 
 const InputField = (props: InputFieldProps) => {
-  const { type, icons, placeholder, onChange } = props
+  const { id, type, icons, placeholder, onChange } = props
   return (
     <InputBox>
       <LogoContainer>{icons?.left}</LogoContainer>
-      <TextInput type={type} placeholder={placeholder} onChange={onChange}></TextInput>
+      <TextInput
+        id={id}
+        name={id}
+        type={type}
+        placeholder={placeholder}
+        onChange={onChange}
+      ></TextInput>
       <LogoContainer>{icons?.right}</LogoContainer>
     </InputBox>
   )

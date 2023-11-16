@@ -29,7 +29,7 @@ const MessageBox = (props: MessageBoxProps) => {
   const { userName, message } = props
   return (
     <MessageContainer>
-      <UserDiv>{userName}</UserDiv>
+      <UserDiv response="UnAnswered">{userName}</UserDiv>
       <StyledMessage>{message}</StyledMessage>
     </MessageContainer>
   )

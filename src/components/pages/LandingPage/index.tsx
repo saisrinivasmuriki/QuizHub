@@ -2,7 +2,7 @@ import styled from 'styled-components'
 
 import { AppLogo } from '../../../config/icons'
 import { useQuiz } from '../../../context/QuizContext'
-import { quizTopics } from '../../../data/quizTopics'
+// import { quizTopics } from '../../../data/quizTopics'
 import { device } from '../../../styles/BreakPoints'
 import {
   CenterCardContainer,
@@ -11,8 +11,12 @@ import {
   PageCenter,
 } from '../../../styles/Global'
 import { ScreenTypes } from '../../../types'
+import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
 
 import Button from '../../atoms/Button'
+import { useNavigate } from 'react-router-dom'
+import { useState } from 'react'
+import { Google } from '../../../config/icons'
 
 const Heading = styled.h2`
   font-size: 32px;
@@ -78,11 +82,33 @@ const SelectButtonText = styled.span`
   }
 `
 
-const QuizTopicsScreen: React.FC = () => {
-  const { quizTopic, selectQuizTopic, setCurrentScreen } = useQuiz()
+const StyledHr = styled.hr`
+  width: 85%;
+  margin: 23px 0px;
+`
 
-  const goToQuizDetailsScreen = () => {
-    setCurrentScreen(ScreenTypes.QuizDetailsScreen)
+const BorderImage = styled.img`
+  border: 2px solid white;
+  border-radius: 8px;
+  cursor: pointer;
+`
+
+const QuizTopicsScreen: React.FC = () => {
+  const auth = getAuth()
+  const navigate = useNavigate()
+  const [authing, setAuthing] = useState(false)
+
+  const signWithGoogle = async () => {
+    setAuthing(true)
+    signInWithPopup(auth, new GoogleAuthProvider())
+      .then((response) => {
+        console.log(response.user.uid)
+        navigate('/create-join')
+      })
+      .catch((error) => {
+        console.log(error)
+        setAuthing(false)
+      })
   }
 
   return (
@@ -94,21 +120,9 @@ const QuizTopicsScreen: React.FC = () => {
         <Heading>
           WELCOME TO <HighlightedText> QUIZ HUB</HighlightedText>
         </Heading>
-        <DetailText>Select topic below to start your Quiz.</DetailText>
-        <SelectButtonContainer>
-          {quizTopics.map(({ title, icon, disabled }) => (
-            <SelectButton
-              key={title}
-              active={quizTopic === title}
-              onClick={() => !disabled && selectQuizTopic(title)}
-              disabled={disabled}
-            >
-              {icon}
-              <SelectButtonText>{title}</SelectButtonText>
-            </SelectButton>
-          ))}
-        </SelectButtonContainer>
-        <Button text="Continue" onClick={goToQuizDetailsScreen} bold />
+        <DetailText>Login to the QuizHub.</DetailText>
+        <StyledHr />
+        <BorderImage src={Google} onClick={signWithGoogle} />
       </CenterCardContainer>
     </PageCenter>
   )

@@ -6,7 +6,15 @@ import ToggleTheme from './components/atoms/ToggleTheme'
 import QuizProvider from './context/QuizProvider'
 import { GlobalStyles } from './styles/Global'
 import { themes } from './styles/Theme'
-import QuestionScreen from './components/pages/QuestionScreen'
+import { initializeApp } from 'firebase/app'
+import { firebaseConfig } from './config/Firebase'
+import { BrowserRouter, Route, Router, Routes } from 'react-router-dom'
+import LandingPage from './components/pages/LandingPage'
+import AuthGuard from './context/AuthGuard'
+import QuizDetailsScreen from './components/pages/QuizDetailsScreen'
+import QuestionScreen from './components/pages/QuestionScreenNew'
+
+initializeApp(firebaseConfig)
 
 function App() {
   const [currentTheme, setCurrentTheme] = useState(() => {
@@ -25,19 +33,51 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />
-      <QuizProvider>
-        <ToggleTheme
+      <BrowserRouter>
+        <QuizProvider>
+          <ToggleTheme
+            onChange={toggleTheme}
+            currentTheme={currentTheme}
+            checked={currentTheme === 'dark'}
+            id="toggleTheme"
+            value="theme"
+          >
+            <Routes>
+              <Route path="/" element={<LandingPage />} />
+              <Route
+                path="/create-join"
+                element={
+                  <AuthGuard>
+                    <QuizDetailsScreen />
+                  </AuthGuard>
+                }
+              />
+              <Route
+                path="/room"
+                element={
+                  <AuthGuard>
+                    <QuestionScreen />
+                  </AuthGuard>
+                }
+              />
+              {/* <Route path="/" element={<QuizTopicsScreen />} /> */}
+            </Routes>
+          </ToggleTheme>
+        </QuizProvider>
+      </BrowserRouter>
+    </ThemeProvider>
+  )
+}
+
+export default App
+
+{
+  /* <ToggleTheme
           onChange={toggleTheme}
           currentTheme={currentTheme}
           checked={currentTheme === 'dark'}
           id="toggleTheme"
           value="theme"
         />
-        {/* <Main /> */}
-        <QuestionScreen />
-      </QuizProvider>
-    </ThemeProvider>
-  )
+        <Main /> */
 }
-
-export default App

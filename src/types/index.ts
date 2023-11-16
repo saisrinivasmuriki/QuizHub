@@ -9,6 +9,8 @@ export enum ScreenTypes {
   ResultScreen,
 }
 
+export type answerResponseType = 'UnAnswered' | 'NotApplicable' | 'Correct' | 'Wrong'
+
 export interface Result extends Question {
   selectedAnswer: string[]
   isMatch: boolean
@@ -33,4 +35,14 @@ export type QuizContextTypes = {
     totalTime: number
     selectedQuizTopic: string
   }
+  roomDetails: {
+    room: string
+    QFromGPT: boolean
+    title: string
+    created: boolean
+  }
+  addQuestion: (question: Question) => void
+  joinRoom: (roomNumber: string) => void
+  createRoom: (roomNumber: string, QFromGpt: boolean, title: string) => void
+  getGptQuestions: () => void
 }

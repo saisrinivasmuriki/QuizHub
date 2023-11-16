@@ -10,31 +10,33 @@ interface optionsProps {
 interface AnswerDropProps {
   isMulti: boolean
   options: string[]
+  disable?: boolean
   handleAnswerSelection: (newValue: unknown, actionMeta: ActionMeta<unknown>) => void
 }
 
 const AnswerDrop = (props: AnswerDropProps) => {
-  const { isMulti, options, handleAnswerSelection } = props
+  const { isMulti, options, handleAnswerSelection, disable } = props
 
   const formatedOptions = options.map((option) => ({ value: option, label: option }))
 
   const currentTheme = useTheme()
-  console.log(currentTheme)
 
   const styles: StylesConfig = {
     control: (baseStyles, state) => ({
       ...baseStyles,
-      boxShadow: ` 0 0 1rem 0 ${currentTheme.colors.themeColor}`,
+      boxShadow: disable ? 'none' : ` 0 0 1rem 0 ${currentTheme.colors.themeColor}`,
       height: 'fit-content',
       maxWidth: '800px',
       width: '100%',
       minHeight: '60px',
       background: currentTheme.colors.background,
       color: currentTheme.colors.primaryText,
+      cursor: disable ? 'not-allowed' : 'pointer',
     }),
     input: (base) => ({
       ...base,
       color: currentTheme.colors.primaryText,
+      cursor: disable ? 'not-allowed' : 'pointer',
     }),
     singleValue: (base) => ({
       ...base,
@@ -68,7 +70,6 @@ const AnswerDrop = (props: AnswerDropProps) => {
     <Select
       className="basic-single"
       classNamePrefix="select"
-      defaultValue={formatedOptions[0]}
       isClearable={true}
       isSearchable={true}
       isMulti={isMulti}
@@ -76,6 +77,7 @@ const AnswerDrop = (props: AnswerDropProps) => {
       options={formatedOptions}
       styles={styles}
       onChange={handleAnswerSelection}
+      isDisabled={disable}
     />
   )
 }

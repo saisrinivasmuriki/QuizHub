@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, ReactNode } from 'react'
 import styled, { keyframes } from 'styled-components'
 import { Moon, Sun } from '../../../config/icons'
 
@@ -90,6 +90,7 @@ interface ToggleThemeProps {
   value: string
   checked: boolean
   currentTheme: string
+  children: ReactNode
 }
 
 const ToggleTheme: FC<ToggleThemeProps> = ({
@@ -98,19 +99,23 @@ const ToggleTheme: FC<ToggleThemeProps> = ({
   value,
   checked,
   currentTheme,
+  children,
 }) => {
   return (
-    <ToggleLabel htmlFor={id}>
-      Mode:
-      <ToggleInput
-        type="checkbox"
-        id={id}
-        onChange={onChange}
-        value={value}
-        checked={checked}
-      />
-      <Ball>{currentTheme === 'light' ? <Sun /> : <Moon />}</Ball>
-    </ToggleLabel>
+    <>
+      <ToggleLabel htmlFor={id}>
+        Mode:
+        <ToggleInput
+          type="checkbox"
+          id={id}
+          onChange={onChange}
+          value={value}
+          checked={checked}
+        />
+        <Ball>{currentTheme === 'light' ? <Sun /> : <Moon />}</Ball>
+      </ToggleLabel>
+      {children}
+    </>
   )
 }
 

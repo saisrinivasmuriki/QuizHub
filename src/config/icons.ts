@@ -11,6 +11,9 @@ import { ReactComponent as EyeHide } from '../assets/icons/hide.svg'
 import { ReactComponent as PasswordIcon } from '../assets/icons/passwordicon.svg'
 import { ReactComponent as EmailIcon } from '../assets/icons/email.svg'
 import { ReactComponent as MessageIcon } from '../assets/icons/messageicon.svg'
+import { ReactComponent as QPostive } from '../assets/icons/qPostive.svg'
+import { ReactComponent as Message } from '../assets/icons/message.svg'
+import Google from '../assets/icons/google.png'
 
 export {
   AppLogo,
@@ -26,4 +29,7 @@ export {
   PasswordIcon,
   EmailIcon,
   MessageIcon,
+  QPostive,
+  Message,
+  Google,
 }

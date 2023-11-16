@@ -3,9 +3,9 @@ import { useEffect } from 'react'
 import { useQuiz } from '../../../context/QuizContext'
 import { ScreenTypes } from '../../../types'
 
-import QuestionScreen from '../QuestionScreen'
+import QuestionScreen from '../QuestionScreenNew'
 import QuizDetailsScreen from '../QuizDetailsScreen'
-import QuizTopicsScreen from '../QuizTopicsScreen'
+import QuizTopicsScreen from '../LandingPage'
 import ResultScreen from '../ResultScreen'
 import SplashScreen from '../SplashScreen'
 
