@@ -18,12 +18,13 @@ const AuthGuard = (props: { children: ReactNode }) => {
       setLoading(false)
     } else {
       console.log('unauthorized')
+      // window.location.href = '/'
       navigate('/')
     }
   })
 
   if (loading) {
-    return <SplashScreen /> 
+    return <SplashScreen />
   }
 
   return <>{children}</>

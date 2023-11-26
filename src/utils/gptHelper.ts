@@ -1,6 +1,8 @@
+// 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
+// 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
 export const getQuestionsFromGPT = async (prompt: string) => {
   console.log('In GPTHelper')
-  const apiKey = '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'
+  const apiKey = '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'
   const apiURL = 'https://api.openai.com/v1/chat/completions'
   try {
     const response = await fetch(apiURL, {

@@ -33,6 +33,7 @@ export const initialState: QuizContextTypes = {
   socketMsg: [],
   userName: `RandomUser@${Math.floor(1000 + Math.random() * 9000)}`,
   setUserName: () => {},
+  leaveRoom: () => {},
   sendMsg: (msg: Message) => {},
   addQuestion: (question: Question) => {},
   joinRoom: (roomNumber: string) => {},

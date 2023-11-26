@@ -31,6 +31,9 @@ export const ButtonStyle = styled.button.attrs(({ outline, bold, big }: ButtonTy
     -webkit-tap-highlight-color: transparent;
   }
 
+  &:hover {
+    transform: scale(1.05);
+  }
   &:active {
     transform: scale(0.98);
     box-shadow: ${({ theme }) => theme.shadows.activeButton};

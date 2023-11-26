@@ -15,6 +15,8 @@ import { ReactComponent as QPostive } from '../assets/icons/qPostive.svg'
 import { ReactComponent as Message } from '../assets/icons/message.svg'
 import Google from '../assets/icons/google.png'
 import Send from '../assets/icons/airplane.png'
+import { ReactComponent as Menu } from '../assets/icons/menu.svg'
+import { ReactComponent as Logout } from '../assets/icons/logout.svg'
 
 export {
   AppLogo,
@@ -34,4 +36,6 @@ export {
   Message,
   Google,
   Send,
+  Menu,
+  Logout,
 }

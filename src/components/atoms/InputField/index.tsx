@@ -14,7 +14,7 @@ interface InputFieldProps {
 
 const InputBox = styled.div`
   border-radius: 8px;
-  box-shadow: 0 0 1rem 0 ${({ theme }) => theme.colors.themeColor};
+  border: 2px solid ${({ theme }) => theme.colors.themeColor};
   padding: 10px;
   display: flex;
   align-items: center;

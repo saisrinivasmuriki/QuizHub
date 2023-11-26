@@ -46,6 +46,7 @@ export type QuizContextTypes = {
   loading: boolean
   socketMsg: Message[]
   userName: string
+  leaveRoom: () => void
   setUserName: Dispatch<SetStateAction<string>>
   sendMsg: (msg: Message) => void
   addQuestion: (question: Question) => void

@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-import { AppLogo, StartIcon } from '../../../config/icons'
+import { AppLogo, Logout, StartIcon } from '../../../config/icons'
 import { useQuiz } from '../../../context/QuizContext'
 import {
   CenterCardContainer,
@@ -16,6 +16,9 @@ import { device } from '../../../styles/BreakPoints'
 import InputField from '../../atoms/InputField'
 import { useState } from 'react'
 import { title } from 'process'
+import { getAuth, signOut } from 'firebase/auth'
+import { HeaderDiv } from '../QuestionScreen'
+import { useNavigate } from 'react-router-dom'
 
 const AppTitle = styled.h2`
   font-weight: 700;
@@ -29,25 +32,22 @@ const DetailTextContainer = styled.div`
   margin-top: 15px;
   margin-bottom: 40px;
   text-align: center;
-  max-width: 608px;
   display: flex;
-  justify-content: space-evenly;
-
   @media ${device.md} {
     flex-direction: column;
   }
 `
 const DetailTextBox = styled.div`
-  max-width: 45%;
-  width: fit-content;
-
-  @media ${device.md} {
-    max-width: 95%;
-  }
+  width: 100%;
+  text-align: center;
+  padding: 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 `
 
 const Seperator = styled.hr`
-  margin: 8px 0px;
   @media ${device.md} {
     width: 80%;
   }
@@ -60,18 +60,16 @@ const DetailText = styled.p`
   line-height: 1.3;
 `
 const DetailBox = styled.div`
-  margin-top: 15px;
-  margin-bottom: 50px;
   display: flex;
-  gap: 20px;
   justify-content: center;
-  width: 300px;
-  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 `
 
 const CenterAlign = styled.div`
   display: flex;
   justify-content: center;
+  margin-top: 10px;
   @media ${device.md} {
     margin-bottom: 50px;
   }
@@ -86,9 +84,31 @@ const LeftAlign = styled.div`
   text-align: left;
 `
 
+const LogoutDiv = styled.div`
+  cursor: pointer;
+  height: fit-content;
+  fill: ${({ theme }) => theme.colors.danger};
+  display: flex;
+  align-items: center;
+  border: 2px solid ${({ theme }) => theme.colors.themeColor};
+  padding: 0px 8px 0px 0px;
+  border-radius: 8px;
+  margin-left: auto;
+`
+
 const QuizDetailsScreen = () => {
   const [createRoomData, setCreateRoomData] = useState({ title: '', QFromGPT: false })
   const [joinRoomData, setJoinRoomData] = useState('')
+  const auth = getAuth()
+  const user = auth.currentUser
+  const navigate = useNavigate()
+
+  const googleSignout = () => {
+    signOut(auth).then((res) => {
+      console.log(res)
+      navigate('/')
+    })
+  }
 
   const { createRoom, joinRoom } = useQuiz()
 
@@ -113,7 +133,7 @@ const QuizDetailsScreen = () => {
     const room = `${createRoomData.title
       .replace(' ', '')
       .toLowerCase()
-      .slice(0,4)}-${roomNumber}`
+      .slice(0, 4)}-${roomNumber}`
     const { QFromGPT, title } = createRoomData
     createRoom(room, QFromGPT, title)
   }
@@ -122,18 +142,20 @@ const QuizDetailsScreen = () => {
     joinRoom(joinRoomData)
   }
 
-  // const { setCurrentScreen, quizDetails } = useQuiz()
-
-  // const { selectedQuizTopic, totalQuestions, totalScore, totalTime } = quizDetails
-
-  // const goToQuestionScreen = () => {
-  //   setCurrentScreen(ScreenTypes.QuestionScreen)
-  // }
-
   return (
     <PageCenter light justifyCenter>
       <CenterCardContainer>
-        <LogoContainer>
+        <LogoutDiv onClick={googleSignout}>
+          <Logout
+            style={{
+              width: '35px',
+              height: '35px',
+              padding: '5px',
+            }}
+          />
+          <p style={{ fontWeight: 'bolder', fontSize: '20px', color: 'red' }}>Logout</p>
+        </LogoutDiv>
+        <LogoContainer style={{ marginTop: '-2rem' }}>
           <AppLogo />
         </LogoContainer>
         <AppTitle>QUIZ HUB</AppTitle>
@@ -143,24 +165,24 @@ const QuizDetailsScreen = () => {
               <HighlightedText>Create</HighlightedText> Room
             </DetailText>
             <DetailBox>
-              <LeftAlign>
-                <label htmlFor="roomTitle">Room Title:</label>
-              </LeftAlign>
+              <label htmlFor="roomTitle" style={{ width: '120px' }}>
+                Room Title:
+              </label>
               <InputField
                 type={'text'}
                 placeholder="Enter Title For Room."
                 id="roomTitle"
                 onChange={changeCreateData}
               />
-              <LeftAlign>
-                <StyledCheckBox
-                  type="checkbox"
-                  name="needGPT"
-                  id="needGPT"
-                  onChange={changeCreateData}
-                />
-                <label htmlFor="needGPT">Need Q's from ChatGPT</label>
-              </LeftAlign>
+            </DetailBox>
+            <DetailBox>
+              <StyledCheckBox
+                type="checkbox"
+                name="needGPT"
+                id="needGPT"
+                onChange={changeCreateData}
+              />
+              <label htmlFor="needGPT">Need Q's from ChatGPT</label>
             </DetailBox>
             <CenterAlign>
               <Button text="Create the Room" iconPosition="left" onClick={creatingRoom} />
@@ -173,7 +195,9 @@ const QuizDetailsScreen = () => {
             </DetailText>
             <DetailBox>
               <LeftAlign>
-                <label htmlFor="joinCode">Join Code:</label>
+                <label htmlFor="joinCode" style={{ width: '120px' }}>
+                  Join Code:
+                </label>
               </LeftAlign>
               <InputField
                 type={'text'}
@@ -217,3 +241,51 @@ const QuizDetailsScreen = () => {
 }
 
 export default QuizDetailsScreen
+
+// <DetailText>
+// <HighlightedText>Create</HighlightedText> Room
+// </DetailText>
+// <DetailBox>
+// <label htmlFor="roomTitle">Room Title:</label>
+// <InputField
+//   type={'text'}
+//   placeholder="Enter Title For Room."
+//   id="roomTitle"
+//   onChange={changeCreateData}
+// />
+// </DetailBox>
+// <LeftAlign>
+// <StyledCheckBox
+//   type="checkbox"
+//   name="needGPT"
+//   id="needGPT"
+//   onChange={changeCreateData}
+// />
+// <label htmlFor="needGPT">Need Q's from ChatGPT</label>
+// </LeftAlign>
+// <CenterAlign>
+// <Button text="Create the Room" iconPosition="left" onClick={creatingRoom} />
+// </CenterAlign>
+// </DetailTextBox>
+
+{
+  /* <DetailTextBox>
+<DetailText>
+  <HighlightedText>Join</HighlightedText> Room
+</DetailText>
+<DetailBox>
+  <LeftAlign>
+    <label htmlFor="joinCode">Join Code:</label>
+  </LeftAlign>
+  <InputField
+    type={'text'}
+    placeholder="Enter Code to Join."
+    id="joinCode"
+    onChange={changeJoinData}
+  />
+</DetailBox>
+<CenterAlign>
+  <Button text="Join the Room" iconPosition="left" onClick={joinigRoom} />
+</CenterAlign>
+</DetailTextBox> */
+}

@@ -7,9 +7,9 @@ import { checkQuestionIncludes } from '../styles/Global'
 import { useNavigate } from 'react-router-dom'
 import { getQuestionsFromGPT } from '../utils/gptHelper'
 import { Message } from 'react-chat-ui'
-import { getAuth } from 'firebase/auth'
 
-export const socket = io.connect('http://localhost:4000')
+// https://sleet-near-warlock.glitch.me
+export const socket = io.connect('https://sleet-near-warlock.glitch.me')
 
 type QuizProviderProps = {
   children: ReactNode
@@ -62,9 +62,18 @@ const QuizProvider = ({ children }: QuizProviderProps) => {
 
   const listenMsg = () => {
     socket.on('recieve_msg', (data) => {
-      console.log(data.senderName, userName, data.senderName !== userName)
-      if (data.senderName !== userName) {
+      console.log(data.senderName, socket.id, data.senderName !== userName)
+      if (data.id !== socket.id) {
         setSocketMsg([...socketMsg, data])
+      }
+    })
+  }
+
+  const roomClosed = () => {
+    socket.on('room_closed', (data) => {
+      if (data) {
+        alert(`${roomDetails.room} is closing..`)
+        navigate('/create-join')
       }
     })
   }
@@ -73,7 +82,11 @@ const QuizProvider = ({ children }: QuizProviderProps) => {
     listenQuestion()
     gptQuestions()
     listenMsg()
-  }, [socket, listenQuestion, gptQuestions, listenMsg])
+  }, [socket, listenQuestion, listenMsg])
+
+  useEffect(() => {
+    roomClosed()
+  }, [socket])
 
   useEffect(() => {
     setQuestions(quizQuestions)
@@ -149,6 +162,8 @@ const QuizProvider = ({ children }: QuizProviderProps) => {
     setSocketMsg([...socketMsg, msg])
   }
 
+  let promptVlaue = ''
+
   const getGptQuestions = () => {
     setLoading(true)
     console.log('In QuizProivder')
@@ -162,27 +177,41 @@ const QuizProvider = ({ children }: QuizProviderProps) => {
           image?: string,
           user: 'chatGPT',
          }. The topic is the ` + roomDetails.title
-    getQuestionsFromGPT(prompt).then((result) => {
-      console.log(result.choices[0].message.content)
-      const gptQuestions = JSON.parse(result.choices[0].message.content)
-      gptQuestions.map((ques: Question) => {
-        if (checkQuestionIncludes(questions, ques).length === 0) {
-          setQuestions([...questions, ques])
+    if (promptVlaue === '') {
+      promptVlaue = prompt
+      getQuestionsFromGPT(prompt).then((result) => {
+        console.log(result)
+        console.log(result.choices[0].message.content)
+        let gptQuestions = JSON.parse(result.choices[0].message.content)
+        if(gptQuestions.questions){
+          gptQuestions = gptQuestions.questions
         }
+        gptQuestions.map((ques: Question) => {
+          if (checkQuestionIncludes(questions, ques).length === 0) {
+            setQuestions([...questions, ques])
+          }
+        })
+        setGotFromGpt(true)
+        socket.emit('get_gpt_questions', {
+          room: roomDetails.room,
+          gptQuestions,
+        })
+        setLoading(false)
+        // rooms[data.room] = { ...rooms[data.room], questions: gptQuestions }
+        // socket.broadcast.to(data.room).emit('gpt_questions', gptQuestions)
+        // callback(gptQuestions)
       })
-      setGotFromGpt(true)
-      socket.emit('get_gpt_questions', {
-        room: roomDetails.room,
-        gptQuestions,
-      })
-      setLoading(false)
-      // rooms[data.room] = { ...rooms[data.room], questions: gptQuestions }
-      // socket.broadcast.to(data.room).emit('gpt_questions', gptQuestions)
-      // callback(gptQuestions)
-    })
-    // socket.emit('get_gpt_questions', roomDetails, (response: any) => {
-    //   setQuestions(response)
-    // })
+      // socket.emit('get_gpt_questions', roomDetails, (response: any) => {
+      //   setQuestions(response)
+      // })
+    }
+  }
+
+  const leaveRoom = () => {
+    socket.emit('leave_room', { ...roomDetails, userName })
+    console.log('leaving room')
+    // navigate('/create-join')
+    window.location.href = '/create-join'
   }
 
   const quizDetails = {
@@ -210,6 +239,7 @@ const QuizProvider = ({ children }: QuizProviderProps) => {
     loading,
     socketMsg,
     userName,
+    leaveRoom,
     setUserName,
     sendMsg,
     setEndTime,

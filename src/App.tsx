@@ -35,33 +35,54 @@ function App() {
       <GlobalStyles />
       <BrowserRouter>
         <QuizProvider>
-          <ToggleTheme
-            onChange={toggleTheme}
-            currentTheme={currentTheme}
-            checked={currentTheme === 'dark'}
-            id="toggleTheme"
-            value="theme"
-          >
-            <Routes>
-              <Route path="/" element={<LandingPage />} />
-              <Route
-                path="/create-join"
-                element={
-                  <AuthGuard>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <ToggleTheme
+                  onChange={toggleTheme}
+                  currentTheme={currentTheme}
+                  checked={currentTheme === 'dark'}
+                  id="toggleTheme"
+                  value="theme"
+                >
+                  <LandingPage />{' '}
+                </ToggleTheme>
+              }
+            />
+            <Route
+              path="/create-join"
+              element={
+                <AuthGuard>
+                  <ToggleTheme
+                    onChange={toggleTheme}
+                    currentTheme={currentTheme}
+                    checked={currentTheme === 'dark'}
+                    id="toggleTheme"
+                    value="theme"
+                  >
                     <QuizDetailsScreen />
-                  </AuthGuard>
-                }
-              />
-              <Route
-                path="/room"
-                element={
-                  <AuthGuard>
+                  </ToggleTheme>
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/room"
+              element={
+                <AuthGuard>
+                  <ToggleTheme
+                    onChange={toggleTheme}
+                    currentTheme={currentTheme}
+                    checked={currentTheme === 'dark'}
+                    id="toggleTheme"
+                    value="theme"
+                  >
                     <QuestionScreen />
-                  </AuthGuard>
-                }
-              />
-            </Routes>
-          </ToggleTheme>
+                  </ToggleTheme>
+                </AuthGuard>
+              }
+            />
+          </Routes>
         </QuizProvider>
       </BrowserRouter>
     </ThemeProvider>

@@ -1,8 +1,8 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react'
 import styled, { useTheme } from 'styled-components'
 import { device } from '../../../styles/BreakPoints'
-import { Sun } from '../../../config/icons'
-import { ControlledMenu, Menu, MenuItem, useClick } from '@szhsin/react-menu'
+import { Menu as MenuIcon } from '../../../config/icons'
+import { ControlledMenu, MenuItem, useClick } from '@szhsin/react-menu'
 
 const IconDiv = styled.div`
   text-align: center;
@@ -66,7 +66,7 @@ const MenuBox = (props: HeaderBoxProps) => {
     <div style={{ height: grow ? `${icons.length * 50 + 130}px` : 'fit-content' }}>
       <MenuContainer>
         <IconDiv {...anchorProps} ref={ref}>
-          <Sun />
+          <MenuIcon style={{ padding: '10px' }} />
         </IconDiv>
         <ControlledMenu
           state={grow ? 'open' : 'closed'}
